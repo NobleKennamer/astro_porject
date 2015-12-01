@@ -1,0 +1,301 @@
+cwSVM {0: 1, 1: 0} training started.
+cwSVM trained
+True Positives 0
+False Positives 121
+True Negatives 23165
+False Negatives 0
+cwSVM {0: 1, 1: 2} training started.
+cwSVM trained
+True Positives 0
+False Positives 121
+True Negatives 23165
+False Negatives 0
+cwSVM {0: 1, 1: 4} training started.
+cwSVM trained
+True Positives 0
+False Positives 121
+True Negatives 23165
+False Negatives 0
+cwSVM {0: 1, 1: 6} training started.
+cwSVM trained
+True Positives 2
+False Positives 119
+True Negatives 23157
+False Negatives 8
+cwSVM {0: 1, 1: 8} training started.
+cwSVM trained
+True Positives 106
+False Positives 15
+True Negatives 22801
+False Negatives 364
+cwSVM {0: 1, 1: 10} training started.
+cwSVM trained
+True Positives 109
+False Positives 12
+True Negatives 22759
+False Negatives 406
+cwSVM {0: 1, 1: 12} training started.
+cwSVM trained
+True Positives 110
+False Positives 11
+True Negatives 22739
+False Negatives 426
+cwSVM {0: 1, 1: 14} training started.
+cwSVM trained
+True Positives 111
+False Positives 10
+True Negatives 22718
+False Negatives 447
+cwSVM {0: 1, 1: 16} training started.
+cwSVM trained
+True Positives 111
+False Positives 10
+True Negatives 22706
+False Negatives 459
+cwSVM {0: 1, 1: 18} training started.
+cwSVM trained
+True Positives 111
+False Positives 10
+True Negatives 22696
+False Negatives 469
+cwSVM {0: 1, 1: 20} training started.
+cwSVM trained
+True Positives 112
+False Positives 9
+True Negatives 22688
+False Negatives 477
+cwSVM {0: 1, 1: 22} training started.
+cwSVM trained
+True Positives 112
+False Positives 9
+True Negatives 22677
+False Negatives 488
+cwSVM {0: 1, 1: 24} training started.
+cwSVM trained
+True Positives 114
+False Positives 7
+True Negatives 22665
+False Negatives 500
+cwSVM {0: 1, 1: 26} training started.
+cwSVM trained
+True Positives 116
+False Positives 5
+True Negatives 22655
+False Negatives 510
+cwSVM {0: 1, 1: 28} training started.
+cwSVM trained
+True Positives 117
+False Positives 4
+True Negatives 22639
+False Negatives 526
+cwSVM {0: 1, 1: 30} training started.
+cwSVM trained
+True Positives 118
+False Positives 3
+True Negatives 22628
+False Negatives 537
+cwSVM {0: 1, 1: 32} training started.
+cwSVM trained
+True Positives 118
+False Positives 3
+True Negatives 22620
+False Negatives 545
+cwSVM {0: 1, 1: 34} training started.
+cwSVM trained
+True Positives 118
+False Positives 3
+True Negatives 22615
+False Negatives 550
+cwSVM {0: 1, 1: 36} training started.
+cwSVM trained
+True Positives 118
+False Positives 3
+True Negatives 22604
+False Negatives 561
+cwSVM {0: 1, 1: 38} training started.
+cwSVM trained
+True Positives 118
+False Positives 3
+True Negatives 22602
+False Negatives 563
+cwSVM {0: 1, 1: 40} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22598
+False Negatives 567
+cwSVM {0: 1, 1: 42} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22595
+False Negatives 570
+cwSVM {0: 1, 1: 44} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22591
+False Negatives 574
+cwSVM {0: 1, 1: 46} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22589
+False Negatives 576
+cwSVM {0: 1, 1: 48} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22582
+False Negatives 583
+cwSVM {0: 1, 1: 50} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22577
+False Negatives 588
+cwSVM {0: 1, 1: 52} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22576
+False Negatives 589
+cwSVM {0: 1, 1: 54} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22569
+False Negatives 596
+cwSVM {0: 1, 1: 56} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22566
+False Negatives 599
+cwSVM {0: 1, 1: 58} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22563
+False Negatives 602
+cwSVM {0: 1, 1: 60} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22558
+False Negatives 607
+cwSVM {0: 1, 1: 62} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22558
+False Negatives 607
+cwSVM {0: 1, 1: 64} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22556
+False Negatives 609
+cwSVM {0: 1, 1: 66} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22554
+False Negatives 611
+cwSVM {0: 1, 1: 68} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22548
+False Negatives 617
+cwSVM {0: 1, 1: 70} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22548
+False Negatives 617
+cwSVM {0: 1, 1: 72} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22543
+False Negatives 622
+cwSVM {0: 1, 1: 74} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22543
+False Negatives 622
+cwSVM {0: 1, 1: 76} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22539
+False Negatives 626
+cwSVM {0: 1, 1: 78} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22536
+False Negatives 629
+cwSVM {0: 1, 1: 80} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22535
+False Negatives 630
+cwSVM {0: 1, 1: 82} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22534
+False Negatives 631
+cwSVM {0: 1, 1: 84} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22529
+False Negatives 636
+cwSVM {0: 1, 1: 86} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22527
+False Negatives 638
+cwSVM {0: 1, 1: 88} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22523
+False Negatives 642
+cwSVM {0: 1, 1: 90} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22522
+False Negatives 643
+cwSVM {0: 1, 1: 92} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22521
+False Negatives 644
+cwSVM {0: 1, 1: 94} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22518
+False Negatives 647
+cwSVM {0: 1, 1: 96} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22517
+False Negatives 648
+cwSVM {0: 1, 1: 98} training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22512
+False Negatives 653
+
