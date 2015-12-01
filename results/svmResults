@@ -1,0 +1,30 @@
+linearSVM training started.
+linearSVM trained
+True Positives 120
+False Positives 1
+True Negatives 22387
+False Negatives 778
+polySVM training started.
+polySVM trained
+True Positives 120
+False Positives 1
+True Negatives 22442
+False Negatives 723
+sigmoidSVM training started.
+sigmoidSVM trained
+True Positives 121
+False Positives 0
+True Negatives 0
+False Negatives 23165
+rbSVM training started.
+rbSVM trained
+True Positives 120
+False Positives 1
+True Negatives 22384
+False Negatives 781
+cwSVM training started.
+cwSVM trained
+True Positives 119
+False Positives 2
+True Negatives 22574
+False Negatives 591

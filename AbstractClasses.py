@@ -29,14 +29,16 @@ class DataSource(object):
     """
     DAO Datasource that returns the data
     """  
-    __PATH = './data/RR_Lyrae_data.npz' 
-        
+    __PATH_LYRAE = './data/RR_Lyrae_data.npz' 
+    __PATH_REDSHIFT = "./data/redshift_mags.npz" 
+    __PATH_QUASAR_STAR = "./data/quasar_star.npz"    
+
     """
     getData loads a .npz file and returns key-value pairs including 
     'arr_0' - A four tuple feature attributes [..,..,..,..]
     'arr_1' - A binary Prediction label
     returnValue: two lists of training and prediction Data 
     """
-    def getData(self):
-        return np.load(DataSource.__PATH)['arr_0'], np.load(DataSource.__PATH)['arr_1'] 
+    def getLyraeData(self):
+        return np.load(DataSource.__PATH_LYRAE)['arr_0'], np.load(DataSource.__PATH_LYRAE)['arr_1'] 
     
