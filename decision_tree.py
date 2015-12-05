@@ -77,17 +77,17 @@ class DecisionTreeClassifier(AbstractClasses.AbstractClassifier):
         
         return data_to_return
     
-    def _featureToSplit(self, dataset):
-        n_features = len(dataset[0])-1
-        baseEntropy = self._entropy(dataset)
+    def _featureToSplit(self, data):
+        n_features = len(data[0])-1
+        baseEntropy = self._entropy(data)
         bestInfoGain = 0.0
         chosen_feature = -1
         for i in range(n_features):
-            uniqueValues = set([row[i] for row in dataset])
+            uniqueValues = set([row[i] for row in data])
             newEntropy = 0.0
             for value in uniqueValues:
-                subDataset = self._splitData(dataset, i, value)
-                prob=len(subDataset)/float(len(dataset))
+                subDataset = self._splitData(data, i, value)
+                prob=len(subDataset)/float(len(data))
                 newEntropy += prob * self._entropy(subDataset)
             
             #calculate information gain
@@ -102,13 +102,18 @@ class DecisionTreeClassifier(AbstractClasses.AbstractClassifier):
         
         list_of_classes = [row[-1] for row in data]
         
+        if list_of_classes.count(list_of_classes[0]) == len(list_of_classes): 
+            return list_of_classes[0]
+        
         #if it is a leaf node then count what is most probable class to predict
-        if(len(list_of_classes) == 1): return self._mostProbableLabel(list_of_classes)
-        
-        if list_of_classes.count(list_of_classes[0]) == len(list_of_classes): return list_of_classes[0]
-        
+        if(len(list_of_classes) == 1): 
+            return self._mostProbableLabel(list_of_classes)
+                
         feat_to_split = self._featureToSplit(data)
-        feature_label = labels[feat_to_split]
+        try:
+            feature_label = labels[feat_to_split]
+        except:
+            return self._mostProbableLabel(list_of_classes)
         
         #set chosen feature as root of tree
         tree = {feature_label:{}}
@@ -130,7 +135,7 @@ class DecisionTreeClassifier(AbstractClasses.AbstractClassifier):
         
         index_feature = self.labels.index(firstStr)
         
-        return_class = 1 #return 1 as default
+        return_class = 0 #return 1 as default
         
         for key in subTrees.keys():
             if data[index_feature] == key:
