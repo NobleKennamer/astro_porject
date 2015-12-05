@@ -16,7 +16,7 @@ This class solves the classification problem using an SVM
 
 class linearSVM(AbstractClasses.AbstractClassifier):
 
-    clf = svm.SVC(kernel='linear',class_weight='balanced')
+    clf = svm.SVC(kernel='linear',class_weight='balanced', probability=True)
     
     def fit(self, data, label):
         print ("linearSVM training started.")
@@ -29,7 +29,7 @@ class linearSVM(AbstractClasses.AbstractClassifier):
     
 class polySVM(AbstractClasses.AbstractClassifier):
 
-    clf = svm.SVC(kernel='poly',class_weight='balanced')
+    clf = svm.SVC(kernel='poly',class_weight='balanced', probability=True)
     kernel='rbf'
     def fit(self, data, label):
         print ("polySVM training started.")
@@ -54,10 +54,10 @@ class sigmoidSVM(AbstractClasses.AbstractClassifier):
 class rbSVM(AbstractClasses.AbstractClassifier):
 
     def __init__(self):
-        self.clf = svm.SVC(kernel='rbf', class_weight='balanced')
+        self.clf = svm.SVC(kernel='rbf', class_weight='balanced', probability=True)
     
     def fit(self, data, label):
-        print ("rbSVM training started.")
+        print ("rbSVM training started."), 
         self.clf.fit(data, label)
         print("rbSVM trained")
         
@@ -68,7 +68,7 @@ class cwSVM(AbstractClasses.AbstractClassifier):
 
     def __init__(self, class_weight = {0:0.2, 1:10.0}):
         self.class_weight = class_weight
-        self.clf = svm.SVC(kernel='rbf', class_weight=self.class_weight)
+        self.clf = svm.SVC(kernel='rbf', class_weight=self.class_weight, probability=True)
     
     def fit(self, data, label):
         print ("cwSVM " + str(self.class_weight) +" training started.")
@@ -81,10 +81,11 @@ class cwSVM(AbstractClasses.AbstractClassifier):
 ####################
 #####Testing########
 ####################
-    
+'''    
 data, label = AbstractClasses.DataSource().getLyraeData()
 trainingData, testingData, trainingLabel, testingLabel = train_test_split(data, label, test_size=0.25, random_state=7)
-modelObjects = [ linearSVM(), polySVM(), sigmoidSVM(), rbSVM(), cwSVM()]
+#modelObjects = [ linearSVM(), polySVM(), rbSVM(), cwSVM({0:1, 1:100})]
+modelObjects = [ linearSVM(), cwSVM({0:1, 1:40})]
 
 for classifier in modelObjects:
     classifier.fit(trainingData, trainingLabel)
@@ -92,7 +93,7 @@ for classifier in modelObjects:
     Utils.perfMeasure(testingLabel.tolist(), predictions.tolist())
     fpr, tpr, thresholds_roc = metrics.roc_curve(testingLabel.tolist(), predictions.tolist(), pos_label=1)
     plt.plot(fpr, tpr, label = classifier.__class__.__name__)
-    
+'''    
 '''        
 for i in range (0,100,2):
     classifier = cwSVM({0:1, 1:i})  
