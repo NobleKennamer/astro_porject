@@ -104,10 +104,10 @@ for i in range (0,100,2):
     plt.plot(fpr, tpr, label = classifier.__class__.__name__ + ' rl:' + str(i))
 '''
 
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.legend(loc='lower right')
-plt.show()
+# plt.xlabel('False Positive Rate')
+# plt.ylabel('True Positive Rate')
+# plt.legend(loc='lower right')
+# plt.show()
 
 '''
 class Kernel(object):
