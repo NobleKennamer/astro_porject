@@ -17,17 +17,17 @@ This class solves the classification problem using an SVM
 
 class linearSVM(AbstractClasses.AbstractClassifier):
 
-    clf = svm.SVC(kernel='linear',class_weight='balanced', probability=True)
-    
+    clf = svm.SVC(kernel='linear',class_weight='auto', probability=True)
+
     def fit(self, data, label):
         print ("linearSVM training started.")
         linearSVM.clf.fit(data, label)
         print("linearSVM trained")
-        
+
     def predict(self, data):
         return linearSVM.clf.predict(data)
-    
-    
+
+
 class polySVM(AbstractClasses.AbstractClassifier):
 
     clf = svm.SVC(kernel='poly',class_weight='balanced', probability=True)
@@ -36,46 +36,46 @@ class polySVM(AbstractClasses.AbstractClassifier):
         print ("polySVM training started.")
         polySVM.clf.fit(data, label)
         print("polySVM trained")
-        
+
     def predict(self, data):
         return polySVM.clf.predict(data)
-    
+
 class sigmoidSVM(AbstractClasses.AbstractClassifier):
 
     clf = svm.SVC(kernel='sigmoid',class_weight='balanced')
-    
+
     def fit(self, data, label):
         print ("sigmoidSVM training started.")
         sigmoidSVM.clf.fit(data, label)
         print("sigmoidSVM trained")
-        
+
     def predict(self, data):
-        return sigmoidSVM.clf.predict(data)    
+        return sigmoidSVM.clf.predict(data)
 
 class rbSVM(AbstractClasses.AbstractClassifier):
 
     def __init__(self):
         self.clf = svm.SVC(kernel='rbf', class_weight='balanced', probability=True)
-    
+
     def fit(self, data, label):
-        print ("rbSVM training started."), 
+        print ("rbSVM training started."),
         self.clf.fit(data, label)
         print("rbSVM trained")
-        
+
     def predict(self, data):
-        return self.clf.predict(data)  
-    
+        return self.clf.predict(data)
+
 class cwSVM(AbstractClasses.AbstractClassifier):
 
     def __init__(self, class_weight = {0:0.2, 1:10.0}):
         self.class_weight = class_weight
         self.clf = svm.SVC(kernel='rbf', class_weight=self.class_weight, probability=True)
-    
+
     def fit(self, data, label):
         print ("cwSVM " + str(self.class_weight) +" training started.")
         self.clf.fit(data, label)
         print("cwSVM trained")
-        
+
     def predict(self, data):
         return self.clf.predict(data)    
     
@@ -119,9 +119,9 @@ class Kernel(object):
         def f(x, y):
             return np.tanh(kappa * np.dot(x, y) + c)
         return f
-        
-MIN_SUPPORT_VECTOR_MULTIPLIER = 1e-5    
-    
+
+MIN_SUPPORT_VECTOR_MULTIPLIER = 1e-5
+
 class SVMTrainer(object):
     def __init__(self, kernel, c):
         self._kernel = kernel
@@ -260,7 +260,7 @@ class SVMTrainer(object):
         b = cvxopt.matrix(0.0)
         solution = cvxopt.solvers.qp(P, q, G, h, A, b)
         return np.ravel(solution['x'])  
-    
+
 class SVMPredictor(object):
     def __init__(self,
                  kernel,
@@ -318,4 +318,4 @@ plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
 plt.legend(loc='lower right')
 plt.show()
-'''  
+'''

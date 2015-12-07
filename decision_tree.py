@@ -4,6 +4,7 @@ from math import log
 import numpy as np
 from pandas import cut #used to discretize data
 import operator
+from sklearn.cross_validation import train_test_split
 
 """
 This class solves the classification problem using Decision Tree
@@ -15,9 +16,12 @@ def frequency(array):
     values, array = np.unique(array, return_inverse=True)
     return values, np.bincount(array.ravel())
  
-class DecisionTreeClassifier(AbstractClasses.AbstractClassifier):   
+class DecisionTreeClassifier(AbstractClasses.AbstractClassifier):
     
-    def _discretizeData(self, data, n_bins = 10):
+    def __init__(self, max_depth = 150):
+        self.max_depth = max_depth
+    
+    def _discretizeData(self, data, n_bins):
         new_data = []
         self.bins = []
         for i in range(data.shape[1]):
@@ -77,17 +81,17 @@ class DecisionTreeClassifier(AbstractClasses.AbstractClassifier):
         
         return data_to_return
     
-    def _featureToSplit(self, dataset):
-        n_features = len(dataset[0])-1
-        baseEntropy = self._entropy(dataset)
+    def _featureToSplit(self, data):
+        n_features = len(data[0])-1
+        baseEntropy = self._entropy(data)
         bestInfoGain = 0.0
         chosen_feature = -1
         for i in range(n_features):
-            uniqueValues = set([row[i] for row in dataset])
+            uniqueValues = set([row[i] for row in data])
             newEntropy = 0.0
             for value in uniqueValues:
-                subDataset = self._splitData(dataset, i, value)
-                prob=len(subDataset)/float(len(dataset))
+                subDataset = self._splitData(data, i, value)
+                prob=len(subDataset)/float(len(data))
                 newEntropy += prob * self._entropy(subDataset)
             
             #calculate information gain
@@ -98,17 +102,27 @@ class DecisionTreeClassifier(AbstractClasses.AbstractClassifier):
                 
         return chosen_feature
     
-    def _buildTree(self, data,labels):
+    def _buildTree(self, data,labels, depth = 0):
         
         list_of_classes = [row[-1] for row in data]
         
+        if list_of_classes.count(list_of_classes[0]) == len(list_of_classes): 
+            return list_of_classes[0]
+        
         #if it is a leaf node then count what is most probable class to predict
-        if(len(list_of_classes) == 1): return self._mostProbableLabel(list_of_classes)
+        if((len(list_of_classes) == 1)): 
+            return self._mostProbableLabel(list_of_classes)
         
-        if list_of_classes.count(list_of_classes[0]) == len(list_of_classes): return list_of_classes[0]
+        '''if(self.max_depth != -1 and depth == self.max_depth):
+            return self._mostProbableLabel(list_of_classes)'''
         
+        depth = depth + 1
+                
         feat_to_split = self._featureToSplit(data)
-        feature_label = labels[feat_to_split]
+        try:
+            feature_label = labels[feat_to_split]
+        except:
+            return self._mostProbableLabel(list_of_classes)
         
         #set chosen feature as root of tree
         tree = {feature_label:{}}
@@ -119,7 +133,7 @@ class DecisionTreeClassifier(AbstractClasses.AbstractClassifier):
         #recursively build tree 
         for value in uniqueVals:
             temp_labels = labels[:]
-            tree[feature_label][value] = self._buildTree(self._splitData(data, feat_to_split, value), temp_labels)
+            tree[feature_label][value] = self._buildTree(self._splitData(data, feat_to_split, value), temp_labels, depth)
         
         return tree
     
@@ -130,7 +144,7 @@ class DecisionTreeClassifier(AbstractClasses.AbstractClassifier):
         
         index_feature = self.labels.index(firstStr)
         
-        return_class = 1 #return 1 as default
+        return_class = 0 #return 1 as default
         
         for key in subTrees.keys():
             if data[index_feature] == key:
@@ -141,7 +155,7 @@ class DecisionTreeClassifier(AbstractClasses.AbstractClassifier):
         return return_class
     
     def fit(self, data, label):
-        d_data = self._discretizeData(data, 150)
+        d_data = self._discretizeData(data, self.max_depth)
         d_data = np.column_stack((d_data,label)).tolist()
     
         nfeature=len(d_data[0])
@@ -162,10 +176,16 @@ class DecisionTreeClassifier(AbstractClasses.AbstractClassifier):
         return np.array(result)
 
 if __name__ == "__main__":    
-    data, labels = AbstractClasses.DataSource().getData()
+    data, labels = AbstractClasses.DataSource().getLyraeData()
 
-    decision = DecisionTreeClassifier()
-    decision.fit(data, labels) 
-    predictions = decision.predict(data)
-    Utils.perfMeasure(labels.tolist(), predictions.tolist())
+    decision = DecisionTreeClassifier(max_depth = 8)
+    
+    
+    colors_train, colors_test, labels_train, labels_test = train_test_split(data, labels, 
+                                                                        test_size=0.25, random_state=13)
+    
+    decision.fit(colors_train, labels_train) 
+    predictions = decision.predict(colors_test)
+    
+    Utils.perfMeasure(labels_test.tolist(), predictions.tolist())
 
