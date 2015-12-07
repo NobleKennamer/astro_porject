@@ -7,7 +7,8 @@ import cvxopt.solvers
 import numpy.linalg as la
 from sklearn import metrics
 import matplotlib.pyplot as plt
-from sklearn.utils import class_weight
+import random
+import math
 
 """
 This class solves the classification problem using an SVM
@@ -78,38 +79,13 @@ class cwSVM(AbstractClasses.AbstractClassifier):
     def predict(self, data):
         return self.clf.predict(data)    
     
-####################
-#####Testing########
-####################
-'''    
-data, label = AbstractClasses.DataSource().getLyraeData()
-trainingData, testingData, trainingLabel, testingLabel = train_test_split(data, label, test_size=0.25, random_state=7)
-#modelObjects = [ linearSVM(), polySVM(), rbSVM(), cwSVM({0:1, 1:100})]
-modelObjects = [ linearSVM(), cwSVM({0:1, 1:40})]
+################################################
+#Custom implementation
+################################################
+#The custom implementation using cvxopt is unsuitable for large datasets
+#SMO implementation of lagrange multipliers should be used - it should be run using pypy for faster computation
+###############################################
 
-for classifier in modelObjects:
-    classifier.fit(trainingData, trainingLabel)
-    predictions = classifier.predict(testingData)
-    Utils.perfMeasure(testingLabel.tolist(), predictions.tolist())
-    fpr, tpr, thresholds_roc = metrics.roc_curve(testingLabel.tolist(), predictions.tolist(), pos_label=1)
-    plt.plot(fpr, tpr, label = classifier.__class__.__name__)
-'''    
-'''        
-for i in range (0,100,2):
-    classifier = cwSVM({0:1, 1:i})  
-    classifier.fit(trainingData, trainingLabel)      
-    predictions = classifier.predict(testingData)
-    Utils.perfMeasure(testingLabel.tolist(), predictions.tolist())
-    fpr, tpr, thresholds_roc = metrics.roc_curve(testingLabel.tolist(), predictions.tolist(), pos_label=1)
-    plt.plot(fpr, tpr, label = classifier.__class__.__name__ + ' rl:' + str(i))
-'''        
-        
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.legend(loc='lower right')
-plt.show()
-
-'''
 class Kernel(object):
     @staticmethod
     def linear():
@@ -120,7 +96,7 @@ class Kernel(object):
     @staticmethod
     def gaussian(sigma):
         def f(x, y):
-            exponeKDEnt = -np.sqrt(la.norm(x-y) ** 2 / (2 * sigma ** 2))
+            exponent = -np.sqrt(la.norm(x-y) ** 2 / (2 * sigma ** 2))
             return np.exp(exponent)
         return f
 
@@ -152,9 +128,6 @@ class SVMTrainer(object):
         self._c = c
 
     def train(self, X, y):
-        """Given the training features X with labels y, returns a SVM
-        predictor representing the trained SVM.
-        """
         lagrange_multipliers = self._compute_multipliers(X, y)
         return self._construct_predictor(X, y, lagrange_multipliers)
 
@@ -162,7 +135,6 @@ class SVMTrainer(object):
         n_samples, n_features = X.shape
         print("called for " + str(n_samples) + "__"+ str(n_features))
         K = np.zeros((n_samples, n_samples))
-        # TODO(tulloch) - vectorize
         for i, x_i in enumerate(X):
             for j, x_j in enumerate(X):
                 K[i, j] = self._kernel(x_i, x_j)
@@ -176,10 +148,6 @@ class SVMTrainer(object):
         support_vectors = X[support_vector_indices]
         support_vector_labels = y[support_vector_indices]
 
-        # http://www.cs.cmu.edu/~guestrin/Class/10701-S07/Slides/kernels.pdf
-        # bias = y_k - \sum z_i y_i  K(x_k, x_i)
-        # Thus we can just predict an example with bias of zero, and
-        # compute error.
         bias = np.mean(
             [y_k - SVMPredictor(
                 kernel=self._kernel,
@@ -195,38 +163,103 @@ class SVMTrainer(object):
             weights=support_multipliers,
             support_vectors=support_vectors,
             support_vector_labels=support_vector_labels)
-
+   
+    #This function computes the lagrange multipliers using the 
+    #SMO algorithm.
     def _compute_multipliers(self, X, y):
+        maxiter = 10000
         n_samples, n_features = X.shape
+        tolerance = 0.3
+        alphatol = math.exp(-4)
+        alpha = [0] * n_samples
+        b = 0
+        passes = 0
+        max_passes = 5
+        iter = 0
+        while (passes < max_passes and iter < maxiter):
+            print("pass " + str(passes))
+            num_changed_alphas = 0
+            for i in range (n_samples):
+                print(i)
+                Ei = 0
+                for j in range (n_samples): 
+                    Ei = Ei + alpha[j] * y[j] * self._kernel(X[j], X[i])
+                Ei = Ei - y[i] + b
+                
+                if((y[i]*Ei < -1 * tolerance and alpha[i] < self._c) or (y[i]*Ei > tolerance and alpha[i] > 0)):
+                    j = random.randint(0, n_samples-1)
+                    while (j == i):
+                        j = random.randint(0, n_samples-1)
+                    Ej = 0
+                    for k in range (n_samples): 
+                        Ej = Ej + alpha[k] * y[k] * self._kernel(X[j], X[k])
+                    Ej = Ej - y[j] + b
+                    alphaI = alpha[i]
+                    alphaJ = alpha[j]
+                    L = 0
+                    H = self._c
+                    if(y[i] == y[j]):
+                        L = max(0, alphaI + alphaJ - self._c)
+                        H = min(self._c, alphaI + alphaJ)
+                    else:
+                        L = max(0, alphaJ - alphaI)
+                        H = min(self._c, self._c + alphaJ - alphaI)
+                    
+                    if(abs(L-H) < alphatol):
+                        continue
+                    eta = 2*self._kernel(X[i],X[j]) - self._kernel(X[i], X[i]) - self._kernel(X[j], X[j])
+                    if(eta >= 0):
+                        continue
+                    
+                    alphaJNew = alphaJ - y[j] * (Ei - Ej) / eta
+                    if (alphaJNew > H):
+                        alphaJNew = H
+                    elif (alphaJNew < L):
+                        alphaJNew = L
+                    if (abs(alphaJNew - alphaJ) < alphatol):
+                        continue
+                    alpha[i] = alpha[i] + y[i] * y[j] * (alphaJ - alphaJNew)
+                    alpha[j] = alphaJNew
+                    
+                    b1 = b - Ei - y[i] * (alpha[i] - alphaI) * self._kernel(X[i], X[i]) - y[j] * (alphaJNew - alphaJ) * self._kernel(X[i], X[j])
+                    b2 = b - Ej - y[i] * (alpha[i] - alphaI) * self._kernel(X[i], X[j]) - y[j] * (alphaJNew - alphaJ) * self._kernel(X[j], X[j])
+                    if(alpha[i] < self._c and alpha[i] > 0):
+                        b = b1
+                    elif(alpha[j] < self._c and alpha[j] > 0):
+                        b = b2
+                    else:
+                        b = (b1 + b2) /2
+                    num_changed_alphas = num_changed_alphas + 1
+            
+            if(num_changed_alphas == 0):
+                passes = passes + 1
+            else:
+                print("Changing alpha")
+                passes = 0
+            iter = iter + 1
+        if(passes==max_passes):
+            print("passes equal max passes - cannot optimize")
+            
+        print("finished optimization")
+        print sum(alpha)
+        return alpha
 
+    ##This functions computes the lagrange multipliers using cvxopt.
+    def _compute_multipliers_cvxopt(self, X, y):
+        n_samples, n_features = X.shape
         K = self._gram_matrix(X)
-        # Solves
-        # min 1/2 x^T P x + q^T x
-        # s.t.
-        #  Gx \coneleq h
-        #  Ax = b
-
         P = cvxopt.matrix(np.outer(y, y) * K)
         q = cvxopt.matrix(-1 * np.ones(n_samples))
-
-        # -a_i \leq 0
         G_std = cvxopt.matrix(np.diag(np.ones(n_samples) * -1))
         h_std = cvxopt.matrix(np.zeros(n_samples))
-
-        # a_i \leq c
         G_slack = cvxopt.matrix(np.diag(np.ones(n_samples)))
         h_slack = cvxopt.matrix(np.ones(n_samples) * self._c)
-
         G = cvxopt.matrix(np.vstack((G_std, G_slack)))
         h = cvxopt.matrix(np.vstack((h_std, h_slack)))
-
         A = cvxopt.matrix(y, (1, n_samples))
         b = cvxopt.matrix(0.0)
-
         solution = cvxopt.solvers.qp(P, q, G, h, A, b)
-
-        # Lagrange multipliers
-        return np.ravel(solution['x'])    
+        return np.ravel(solution['x'])  
     
 class SVMPredictor(object):
     def __init__(self,
@@ -244,9 +277,6 @@ class SVMPredictor(object):
         assert len(weights) == len(support_vector_labels)
 
     def predict(self, x):
-        """
-        Computes the SVM prediction on the given features x.
-        """
         result = self._bias
         for z_i, x_i, y_i in zip(self._weights,
                                  self._support_vectors,
@@ -256,6 +286,36 @@ class SVMPredictor(object):
             return 0
         else: 
             return 1    
-    
-'''
 
+
+####################
+#####Testing########
+####################
+'''
+data, label = AbstractClasses.DataSource().getLyraeData()
+trainingData, testingData, trainingLabel, testingLabel = train_test_split(data, label, test_size=0.25, random_state=7)
+#modelObjects = [ linearSVM(), polySVM(), rbSVM(), cwSVM({0:1, 1:100})]
+modelObjects = [ linearSVM(), cwSVM({0:1, 1:40})]
+
+for classifier in modelObjects:
+    classifier.fit(trainingData, trainingLabel)
+    predictions = classifier.predict(testingData)
+    Utils.perfMeasure(testingLabel.tolist(), predictions.tolist())
+    fpr, tpr, thresholds_roc = metrics.roc_curve(testingLabel.tolist(), predictions.tolist(), pos_label=1)
+    plt.plot(fpr, tpr, label = classifier.__class__.__name__)
+'''    
+'''        
+for i in range (0,100,2):
+    classifier = cwSVM({0:1, 1:i})  
+    classifier.fit(trainingData, trainingLabel)      
+    predictions = classifier.predict(testingData)
+    Utils.perfMeasure(testingLabel.tolist(), predictions.tolist())
+    fpr, tpr, thresholds_roc = metrics.roc_curve(testingLabel.tolist(), predictions.tolist(), pos_label=1)
+    plt.plot(fpr, tpr, label = classifier.__class__.__name__ + ' rl:' + str(i))
+      
+        
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.legend(loc='lower right')
+plt.show()
+'''  
